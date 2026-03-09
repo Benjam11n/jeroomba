@@ -83,6 +83,20 @@ async function inferImageDimensions(src: string) {
   }
 }
 
+function createRenderedImageStyle(
+  explicitWidth?: number,
+  style?: CSSProperties,
+): CSSProperties | undefined {
+  if (!explicitWidth && !style) {
+    return undefined;
+  }
+
+  return {
+    ...(explicitWidth ? { maxWidth: `${explicitWidth}px`, width: "100%" } : {}),
+    ...style,
+  };
+}
+
 export async function MdxImage({
   alt = "",
   className,
@@ -103,9 +117,11 @@ export async function MdxImage({
     explicitWidth && explicitHeight
       ? { width: explicitWidth, height: explicitHeight }
       : await inferImageDimensions(src);
+  const renderedStyle = createRenderedImageStyle(explicitWidth, style);
 
   const imageClassName = cn(
-    "h-auto w-full rounded-[1.5rem] border border-border/60 bg-muted/30 object-cover shadow-sm",
+    "h-auto rounded-[1.5rem] border border-border/60 bg-muted/30 object-cover shadow-sm",
+    explicitWidth ? "max-w-full" : "w-full",
     className,
   );
   const caption = title?.trim();
@@ -120,7 +136,7 @@ export async function MdxImage({
           loading={loading}
           sizes={blogImageSizes}
           src={src}
-          style={style}
+          style={renderedStyle}
           title={title}
           width={resolvedDimensions.width}
         />
@@ -134,7 +150,7 @@ export async function MdxImage({
           // Local public assets still use next/image with inferred dimensions.
           loading={loading}
           src={src}
-          style={style}
+          style={renderedStyle}
           title={title}
           width={explicitWidth}
         />
