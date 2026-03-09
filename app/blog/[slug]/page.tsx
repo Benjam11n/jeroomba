@@ -2,11 +2,12 @@ import type { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MdxImage } from "@/components/blog/mdx-image";
 import { Container } from "@/components/layout/container";
 import { buttonVariants } from "@/components/ui/button";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
 import { ROUTES, siteConfig } from "@/lib/site";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 type PostPageProps = {
   params: Promise<{
@@ -31,6 +32,13 @@ export async function generateMetadata({
     return {};
   }
 
+  const socialImage = post.coverImage
+    ? {
+        url: `${siteConfig.url}${post.coverImage}`,
+        alt: post.coverImageAlt ?? post.title,
+      }
+    : undefined;
+
   return {
     title: post.title,
     description: post.description,
@@ -43,11 +51,13 @@ export async function generateMetadata({
       url: `${siteConfig.url}${ROUTES.blogPost(post.slug)}`,
       type: "article",
       publishedTime: post.date,
+      images: socialImage ? [socialImage] : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title: post.title,
       description: post.description,
+      images: socialImage ? [socialImage.url] : undefined,
     },
   };
 }
@@ -95,7 +105,21 @@ export default async function BlogPostPage({ params }: PostPageProps) {
           </div>
         </header>
 
-        <div className="mt-10 rounded-[2rem] border border-border/60 bg-card/70 p-8 sm:p-10">
+        {post.coverImage ? (
+          <MdxImage
+            alt={post.coverImageAlt ?? post.title}
+            className="aspect-[16/10] object-cover"
+            loading="eager"
+            src={post.coverImage}
+          />
+        ) : null}
+
+        <div
+          className={cn(
+            "rounded-[2rem] border border-border/60 bg-card/70 p-8 sm:p-10",
+            post.coverImage ? "mt-0" : "mt-10",
+          )}
+        >
           <div className="prose prose-neutral max-w-none text-base prose-headings:font-serif prose-headings:text-foreground prose-p:leading-8 prose-p:text-foreground/85 prose-a:text-accent prose-a:no-underline hover:prose-a:text-foreground prose-strong:text-foreground prose-code:rounded prose-code:bg-muted prose-code:px-1 prose-code:py-0.5 prose-code:font-mono prose-code:text-[0.9em] prose-code:text-foreground prose-code:before:content-none prose-code:after:content-none prose-pre:border prose-pre:border-border/80 prose-pre:bg-[#03245c] prose-pre:text-[#f8f7f4] prose-li:marker:text-accent [&_pre_code]:bg-transparent [&_pre_code]:px-0 [&_pre_code]:py-0 [&_pre_code]:text-inherit">
             {post.content}
           </div>

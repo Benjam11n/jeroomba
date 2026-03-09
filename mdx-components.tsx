@@ -1,5 +1,6 @@
 import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
+import { MdxImage } from "@/components/blog/mdx-image";
 
 export const mdxComponents: MDXComponents = {
   a: ({ href = "", ...props }) => {
@@ -11,6 +12,7 @@ export const mdxComponents: MDXComponents = {
 
     return <Link href={href} {...props} />;
   },
+  img: MdxImage,
 };
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {

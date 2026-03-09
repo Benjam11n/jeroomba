@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Magnetic } from "@/components/ui/magnetic";
 import type { PostSummary } from "@/lib/posts";
@@ -17,10 +18,19 @@ export function PostCard({ post }: PostCardProps) {
     >
       <article className="group relative flex h-full flex-col rounded-[2rem] bg-muted/40 p-4 transition-all hover:bg-muted/60">
         <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] bg-muted">
-          {/* Dummy image representation */}
-          <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted-foreground/20 to-muted-foreground/10 font-medium tracking-wide text-muted-foreground/50">
-            Article Image
-          </div>
+          {post.coverImage ? (
+            <Image
+              alt={post.coverImageAlt ?? post.title}
+              className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+              fill
+              sizes="(min-width: 1024px) 560px, 100vw"
+              src={post.coverImage}
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-muted-foreground/20 to-muted-foreground/10 font-medium tracking-wide text-muted-foreground/50">
+              Article Image
+            </div>
+          )}
         </div>
 
         <div className="flex flex-1 flex-col px-2 pb-2 pt-6">

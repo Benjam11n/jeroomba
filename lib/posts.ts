@@ -14,6 +14,8 @@ type PostFrontmatter = {
   description: string;
   date: string;
   tags: string[];
+  coverImage?: string;
+  coverImageAlt?: string;
   featured: boolean;
   published: boolean;
 };
@@ -24,6 +26,8 @@ export type PostSummary = {
   description: string;
   date: string;
   tags: string[];
+  coverImage?: string;
+  coverImageAlt?: string;
   featured: boolean;
   published: boolean;
   readingTime: string;
@@ -42,6 +46,8 @@ function normalizeFrontmatter(
     description: frontmatter.description ?? "",
     date: frontmatter.date ?? new Date().toISOString(),
     tags: frontmatter.tags ?? [],
+    coverImage: frontmatter.coverImage,
+    coverImageAlt: frontmatter.coverImageAlt,
     featured: frontmatter.featured ?? false,
     published: frontmatter.published ?? true,
   };
