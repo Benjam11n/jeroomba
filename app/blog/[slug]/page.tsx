@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { Container } from "@/components/layout/container";
 import { buttonVariants } from "@/components/ui/button";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
-import { siteConfig } from "@/lib/site";
+import { ROUTES, siteConfig } from "@/lib/site";
 import { formatDate } from "@/lib/utils";
 
 type PostPageProps = {
@@ -35,12 +35,12 @@ export async function generateMetadata({
     title: post.title,
     description: post.description,
     alternates: {
-      canonical: `/blog/${post.slug}`,
+      canonical: ROUTES.blogPost(post.slug),
     },
     openGraph: {
       title: post.title,
       description: post.description,
-      url: `${siteConfig.url}/blog/${post.slug}`,
+      url: `${siteConfig.url}${ROUTES.blogPost(post.slug)}`,
       type: "article",
       publishedTime: post.date,
     },
@@ -64,7 +64,7 @@ export default async function BlogPostPage({ params }: PostPageProps) {
     <Container className="pb-24 pt-12">
       <article className="mx-auto max-w-3xl">
         <Link
-          href="/blog"
+          href={ROUTES.blog}
           className={buttonVariants({ variant: "ghost", size: "sm" })}
         >
           <ArrowLeft className="size-4" />

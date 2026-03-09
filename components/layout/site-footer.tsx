@@ -1,27 +1,205 @@
+"use client";
+
+import { useLayoutEffect, useRef } from "react";
 import Link from "next/link";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Container } from "@/components/layout/container";
-import { siteConfig } from "@/lib/site";
+import { ROUTES, siteConfig } from "@/lib/site";
+
+gsap.registerPlugin(ScrollTrigger);
 
 export function SiteFooter() {
+  const footerRef = useRef<HTMLElement>(null);
+  const footerSocials = siteConfig.socials.filter(
+    (social) => social.label === "LinkedIn" || social.label === "X",
+  );
+
+  useLayoutEffect(() => {
+    const footer = footerRef.current;
+
+    if (!footer) {
+      return;
+    }
+
+    const media = gsap.matchMedia();
+    const ctx = gsap.context(() => {
+      media.add("(prefers-reduced-motion: reduce)", () => {
+        gsap.set(
+          [
+            "[data-footer-eyebrow]",
+            "[data-footer-brand]",
+            "[data-footer-nav]",
+            "[data-footer-link]",
+            "[data-footer-bottom]",
+            "[data-footer-social]",
+          ],
+          {
+            clearProps: "all",
+          },
+        );
+      });
+
+      media.add("(prefers-reduced-motion: no-preference)", () => {
+        const introTimeline = gsap.timeline({
+          defaults: {
+            ease: "power3.out",
+          },
+          scrollTrigger: {
+            trigger: footer,
+            start: "top 82%",
+            once: true,
+          },
+        });
+
+        introTimeline
+          .from("[data-footer-eyebrow]", {
+            autoAlpha: 0,
+            y: 18,
+            duration: 0.45,
+          })
+          .from(
+            "[data-footer-brand]",
+            {
+              autoAlpha: 0,
+              y: 48,
+              duration: 0.9,
+            },
+            "-=0.15",
+          )
+          .from(
+            "[data-footer-nav]",
+            {
+              autoAlpha: 0,
+              x: 28,
+              duration: 0.65,
+            },
+            "-=0.55",
+          )
+          .from(
+            "[data-footer-link]",
+            {
+              autoAlpha: 0,
+              y: 18,
+              duration: 0.45,
+              stagger: 0.08,
+            },
+            "-=0.38",
+          );
+
+        gsap.from("[data-footer-bottom]", {
+          autoAlpha: 0,
+          y: 24,
+          duration: 0.65,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: "[data-footer-bottom]",
+            start: "top 96%",
+            once: true,
+          },
+        });
+
+        gsap.from("[data-footer-social]", {
+          autoAlpha: 0,
+          scale: 0.8,
+          duration: 0.4,
+          ease: "back.out(1.8)",
+          stagger: 0.08,
+          scrollTrigger: {
+            trigger: "[data-footer-bottom]",
+            start: "top 96%",
+            once: true,
+          },
+        });
+      });
+    }, footer);
+
+    return () => {
+      ctx.revert();
+      media.revert();
+    };
+  }, []);
+
   return (
-    <footer className="border-t border-border/60">
-      <Container className="flex flex-col gap-6 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="font-medium text-foreground">{siteConfig.name}</p>
+    <footer
+      ref={footerRef}
+      className="relative overflow-hidden border-t border-border/60 bg-card/30 pb-8 pt-16"
+    >
+      <Container className="space-y-12">
+        <div className="grid gap-12 lg:grid-cols-[minmax(0,1.2fr)_minmax(16rem,0.6fr)] lg:items-end">
+          <div className="max-w-3xl space-y-1">
+            <p
+              data-footer-eyebrow
+              className="text-xs uppercase tracking-[0.24em] text-muted-foreground"
+            >
+              Travel Journal
+            </p>
+            <Link
+              href={ROUTES.blog}
+              data-footer-brand
+              className="-ml-2 group relative block h-[5.25rem] overflow-hidden pl-2 sm:-ml-3 sm:h-[6.25rem] sm:pl-3 lg:-ml-4 lg:h-[8.1rem] lg:pl-4"
+            >
+              <div className="flex h-full flex-col transition-transform duration-300 ease-[cubic-bezier(0.76,0,0.24,1)] group-hover:-translate-y-full">
+                <div className="flex h-full w-full shrink-0 items-start justify-start pt-0.5 sm:pt-1 lg:pt-1.5">
+                  <h2 className="select-none font-serif text-5xl font-light leading-none tracking-tight text-foreground italic sm:text-6xl lg:text-8xl">
+                    Jeroomba
+                  </h2>
+                </div>
+
+                <div className="flex h-full w-full shrink-0 items-start justify-start pt-0.5 sm:pt-1 lg:pt-1.5">
+                  <h2 className="select-none font-serif text-4xl font-light leading-none tracking-tight text-primary italic sm:text-5xl lg:text-7xl">
+                    Read the stories
+                  </h2>
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          <div data-footer-nav className="space-y-4 text-sm">
+            <p className="font-medium uppercase tracking-[0.2em] text-muted-foreground">
+              Explore
+            </p>
+            <div className="flex flex-col items-start gap-3">
+              {siteConfig.navItems.map((item) => (
+                <div key={item.label} data-footer-link className="inline-block">
+                  <Link
+                    href={item.href}
+                    className="text-base font-medium text-foreground transition-colors hover:text-primary"
+                  >
+                    {item.label}
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-4">
-          {siteConfig.socials.map((social) => (
-            <Link
-              key={social.label}
-              href={social.href}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-foreground"
-            >
-              {social.label}
-            </Link>
-          ))}
+        <div
+          data-footer-bottom
+          className="flex flex-col gap-6 border-t border-border/60 pt-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between"
+        >
+          <p>
+            {siteConfig.name} © {new Date().getFullYear()}
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            {footerSocials.map((social) => (
+              <div
+                key={social.label}
+                data-footer-social
+                className="inline-block"
+              >
+                <Link
+                  href={social.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center rounded-full border border-border/70 bg-background/80 px-4 py-2 font-medium text-foreground transition-colors hover:border-foreground/40 hover:text-primary"
+                >
+                  {social.label}
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
       </Container>
     </footer>

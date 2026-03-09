@@ -1,3 +1,9 @@
+export const ROUTES = {
+  home: "/",
+  blog: "/blog",
+  blogPost: (slug: string) => `/blog/${slug}`,
+} as const;
+
 export const siteConfig = {
   name: "Jeroomba",
   description:
@@ -12,8 +18,8 @@ export const siteConfig = {
     "photography",
   ],
   navItems: [
-    { label: "Home", href: "/" },
-    { label: "Blog", href: "/blog" },
+    { label: "Home", href: ROUTES.home },
+    { label: "Blog", href: ROUTES.blog },
   ],
   socials: [
     { label: "LinkedIn", href: "https://www.linkedin.com/" },
