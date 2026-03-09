@@ -43,7 +43,7 @@ export function HomePageAnimations({ children }: HomePageAnimationsProps) {
         const frames = gsap.utils.toArray<HTMLElement>("[data-hero-frame]");
         const heroTimeline = gsap.timeline({
           defaults: {
-            duration: 0.9,
+            duration: 0.82,
             ease: "power3.out",
           },
         });
@@ -53,7 +53,7 @@ export function HomePageAnimations({ children }: HomePageAnimationsProps) {
             autoAlpha: 0,
             yPercent: 110,
             rotate: 1.5,
-            duration: 0.85,
+            duration: 0.72,
           })
           .from(
             "[data-hero-title-line='second']",
@@ -61,9 +61,9 @@ export function HomePageAnimations({ children }: HomePageAnimationsProps) {
               autoAlpha: 0,
               yPercent: 110,
               rotate: 1.5,
-              duration: 0.85,
+              duration: 0.72,
             },
-            "-=0.46",
+            "-=0.54",
           )
           .fromTo(
             frames,
@@ -83,20 +83,20 @@ export function HomePageAnimations({ children }: HomePageAnimationsProps) {
               y: 0,
               rotate: (_, element) =>
                 Number((element as HTMLElement).dataset.rotate ?? 0),
-              duration: 1.05,
+              duration: 0.92,
               ease: "power3.out",
             },
-            "-=0.2",
+            "-=0.28",
           )
           .from(
             "[data-hero-after-title]",
             {
               autoAlpha: 0,
               y: 28,
-              duration: 0.72,
-              stagger: 0.12,
+              duration: 0.62,
+              stagger: 0.1,
             },
-            "-=0.38",
+            "-=0.44",
           );
 
         frames.forEach((frame) => {
