@@ -33,7 +33,7 @@ export default async function Home() {
       enterX: 220,
       enterY: 28,
       className:
-        "absolute top-0 left-[-1%] md:left-[2%] lg:left-[3%] xl:left-0 w-40 md:w-56 aspect-[3/4] rotate-[-18deg]",
+        "absolute top-0 left-[-1%] md:left-[2%] lg:left-[3%] xl:left-0 w-36 md:w-56 aspect-[3/4] rotate-[-18deg]",
     },
     {
       alt: "Basque cheesecake illustration",
@@ -42,7 +42,7 @@ export default async function Home() {
       enterX: -210,
       enterY: 24,
       className:
-        "absolute top-[5%] right-[-1%] md:right-[2%] lg:right-[3%] xl:right-0 w-36 md:w-48 aspect-[3/4] rotate-[15deg]",
+        "absolute top-[5%] right-[-1%] md:right-[2%] lg:right-[3%] xl:right-0 w-32 md:w-48 aspect-[3/4] rotate-[15deg]",
     },
     {
       alt: "Gyros illustration",
@@ -51,7 +51,7 @@ export default async function Home() {
       enterX: 170,
       enterY: -22,
       className:
-        "absolute bottom-[0%] left-[-1%] md:left-[5%] lg:left-[12%] w-40 md:w-52 aspect-[4/3] rotate-[-10deg]",
+        "absolute bottom-[0%] left-[-1%] md:left-[5%] lg:left-[12%] w-36 md:w-52 aspect-[4/3] rotate-[-10deg]",
     },
     {
       alt: "Meatballs illustration",
@@ -60,7 +60,7 @@ export default async function Home() {
       enterX: -180,
       enterY: -26,
       className:
-        "absolute bottom-[5%] right-[-1%] md:right-[5%] lg:right-[12%] w-44 md:w-60 aspect-[4/3] rotate-[8deg]",
+        "absolute bottom-[5%] right-[-1%] md:right-[5%] lg:right-[12%] w-40 md:w-60 aspect-[4/3] rotate-[8deg]",
     },
   ] as const;
 
@@ -89,7 +89,7 @@ export default async function Home() {
                       src={image.src}
                       alt={image.alt}
                       fill
-                      sizes="(min-width: 1024px) 240px, (min-width: 768px) 224px, 176px"
+                      sizes="(min-width: 1024px) 240px, (min-width: 768px) 224px, 160px"
                       className="object-cover"
                     />
                   </div>
@@ -152,7 +152,7 @@ export default async function Home() {
               data-reveal="section-intro"
               className="flex flex-col items-center space-y-4 text-center"
             >
-              <h2 className="text-6xl sm:text-7xl font-serif text-foreground italic font-light tracking-tight">
+              <h2 className="text-5xl sm:text-7xl font-serif text-foreground italic font-light tracking-tight">
                 Recent Journeys
               </h2>
               <p className="text-lg text-muted-foreground pt-2">

@@ -87,7 +87,7 @@ export default async function BlogPostPage({ params }: PostPageProps) {
             <span className="text-border">/</span>
             <span>{post.readingTime}</span>
           </div>
-          <h1 className="mt-4 font-serif text-5xl leading-tight text-balance">
+          <h1 className="mt-4 font-serif text-4xl leading-tight text-balance sm:text-5xl">
             {post.title}
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-8 text-muted-foreground">
