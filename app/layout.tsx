@@ -32,6 +32,11 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [...siteConfig.keywords],
+  icons: {
+    icon: "/jeroomba-logo.jpeg",
+    shortcut: "/jeroomba-logo.jpeg",
+    apple: "/jeroomba-logo.jpeg",
+  },
   alternates: {
     canonical: "/",
   },
