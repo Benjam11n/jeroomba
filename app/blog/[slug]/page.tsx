@@ -4,7 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MdxImage } from "@/components/blog/mdx-image";
 import { Container } from "@/components/layout/container";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
 import { ROUTES, siteConfig } from "@/lib/site";
 import { cn, formatDate } from "@/lib/utils";
@@ -73,13 +73,12 @@ export default async function BlogPostPage({ params }: PostPageProps) {
   return (
     <Container className="pb-24 pt-12">
       <article className="mx-auto max-w-3xl">
-        <Link
-          href={ROUTES.blog}
-          className={buttonVariants({ variant: "ghost", size: "sm" })}
-        >
-          <ArrowLeft className="size-4" />
-          Back to blog
-        </Link>
+        <Button asChild variant="ghost" size="sm">
+          <Link href={ROUTES.blog}>
+            <ArrowLeft className="size-4" />
+            Back to blog
+          </Link>
+        </Button>
 
         <header className="mt-8 rounded-[2rem] border border-border/60 bg-card/85 p-8 sm:p-10">
           <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">

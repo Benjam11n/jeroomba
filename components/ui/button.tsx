@@ -1,8 +1,13 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import type { ComponentPropsWithoutRef } from "react";
+import {
+  Children,
+  cloneElement,
+  isValidElement,
+  type ComponentPropsWithoutRef,
+} from "react";
 import { cn } from "@/lib/utils";
 
-export const buttonVariants = cva(
+const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-transform duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
@@ -28,20 +33,41 @@ export const buttonVariants = cva(
 );
 
 type ButtonProps = ComponentPropsWithoutRef<"button"> &
-  VariantProps<typeof buttonVariants>;
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+  };
 
 export function Button({
+  asChild = false,
+  children,
   className,
   variant,
   size,
   type = "button",
   ...props
 }: ButtonProps) {
+  const buttonClassName = cn(buttonVariants({ variant, size }), className);
+
+  if (asChild) {
+    const child = Children.only(children);
+
+    if (!isValidElement<{ className?: string }>(child)) {
+      return null;
+    }
+
+    return cloneElement(child, {
+      ...props,
+      className: cn(buttonClassName, child.props.className),
+    });
+  }
+
   return (
     <button
       type={type}
-      className={cn(buttonVariants({ variant, size }), className)}
+      className={buttonClassName}
       {...props}
-    />
+    >
+      {children}
+    </button>
   );
 }

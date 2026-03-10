@@ -4,16 +4,13 @@ import { useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Linkedin, X } from "lucide-react";
 import { Container } from "@/components/layout/container";
+import { Magnetic } from "@/components/ui/magnetic";
+import { siteNavLinkClassName, siteSocialIcons } from "@/lib/constants";
 import { ROUTES, siteConfig } from "@/lib/site";
+import { cn } from "@/lib/utils";
 
 gsap.registerPlugin(ScrollTrigger);
-
-const socialIcons = {
-  linkedin: Linkedin,
-  x: X,
-} as const;
 
 export function SiteFooter() {
   const footerRef = useRef<HTMLElement>(null);
@@ -165,12 +162,21 @@ export function SiteFooter() {
             <div className="flex flex-col items-start gap-3">
               {siteConfig.navItems.map((item) => (
                 <div key={item.label} data-footer-link className="inline-block">
-                  <Link
-                    href={item.href}
-                    className="text-base font-medium text-foreground transition-colors hover:text-primary"
+                  <Magnetic
+                    className="inline-block"
+                    maxOffset={8}
+                    strength={0.12}
                   >
-                    {item.label}
-                  </Link>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        siteNavLinkClassName,
+                        "text-base font-medium",
+                      )}
+                    >
+                      {item.label}
+                    </Link>
+                  </Magnetic>
                 </div>
               ))}
             </div>
@@ -187,7 +193,7 @@ export function SiteFooter() {
 
           <div className="flex flex-wrap gap-3">
             {siteConfig.socials.map((social) => {
-              const SocialIcon = socialIcons[social.icon];
+              const SocialIcon = siteSocialIcons[social.icon];
 
               return (
                 <div

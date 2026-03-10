@@ -5,7 +5,7 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import { cache } from "react";
 import readingTime from "reading-time";
 import remarkGfm from "remark-gfm";
-import { mdxComponents } from "@/mdx-components";
+import { mdxComponents } from "@/components/blog/mdx-components";
 
 const postsDirectory = path.join(process.cwd(), "content/blog");
 
@@ -34,7 +34,7 @@ export type PostSummary = {
   excerpt: string;
 };
 
-export type PostPageData = PostSummary & {
+type PostPageData = PostSummary & {
   content: React.ReactNode;
 };
 
