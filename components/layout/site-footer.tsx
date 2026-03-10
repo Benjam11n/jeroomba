@@ -6,7 +6,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Container } from "@/components/layout/container";
 import { Magnetic } from "@/components/ui/magnetic";
-import { siteNavLinkClassName, siteSocialIcons } from "@/lib/constants";
+import { siteNavLinkClassName } from "@/lib/constants";
 import { ROUTES, siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,6 @@ export function SiteFooter() {
             "[data-footer-nav]",
             "[data-footer-link]",
             "[data-footer-bottom]",
-            "[data-footer-social]",
           ],
           {
             clearProps: "all",
@@ -92,19 +91,6 @@ export function SiteFooter() {
           y: 24,
           duration: 0.65,
           ease: "power2.out",
-          scrollTrigger: {
-            trigger: "[data-footer-bottom]",
-            start: "top 96%",
-            once: true,
-          },
-        });
-
-        gsap.from("[data-footer-social]", {
-          autoAlpha: 0,
-          scale: 0.8,
-          duration: 0.4,
-          ease: "back.out(1.8)",
-          stagger: 0.08,
           scrollTrigger: {
             trigger: "[data-footer-bottom]",
             start: "top 96%",
@@ -191,31 +177,7 @@ export function SiteFooter() {
             {siteConfig.name} © {new Date().getFullYear()}
           </p>
 
-          <div className="flex flex-wrap gap-3">
-            {siteConfig.socials.map((social) => {
-              const SocialIcon = siteSocialIcons[social.icon];
 
-              return (
-                <div
-                  key={social.label}
-                  data-footer-social
-                  className="inline-block"
-                >
-                  <Link
-                    href={social.href}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-4 py-2 font-medium text-foreground transition-colors hover:border-foreground/40 hover:text-primary"
-                  >
-                    <SocialIcon className="size-4" aria-hidden="true" />
-                    <span className="transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5">
-                      {social.label}
-                    </span>
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
         </div>
       </Container>
     </footer>

@@ -8,7 +8,7 @@ export const siteConfig = {
   name: "Jeroomba",
   description:
     "A personal travel blog documenting adventures around the world.",
-  url: "https://jeroomba.vercel.app",
+  url: "https://jeroomba.com",
   email: "hello@jeroomba.dev",
   keywords: [
     "travel blog",
@@ -16,6 +16,9 @@ export const siteConfig = {
     "personal journal",
     "Wanderlust",
     "photography",
+    "food",
+    "food photography",
+    "food blog"
   ],
   navItems: [
     { label: "Home", href: ROUTES.home },
