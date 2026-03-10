@@ -13,8 +13,8 @@ export function PostCard({ post }: PostCardProps) {
     <Magnetic
       className="block h-full"
       innerClassName="h-full"
-      maxOffset={14}
-      strength={0.12}
+      maxOffset={8}
+      strength={0.08}
     >
       <article className="group relative flex h-full flex-col rounded-[2rem] bg-muted/40 p-4 transition-all hover:bg-muted/60">
         <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] bg-muted">
@@ -40,6 +40,15 @@ export function PostCard({ post }: PostCardProps) {
           <p className="mt-3 text-sm leading-relaxed text-muted-foreground/90">
             {post.description}
           </p>
+          <div className="mt-5 inline-flex items-center gap-1 text-sm font-medium text-primary/90">
+            <span>Read story</span>
+            <span
+              aria-hidden
+              className="inline-block transition-transform duration-300 ease-out group-hover:translate-x-1 group-focus-within:translate-x-1"
+            >
+              →
+            </span>
+          </div>
         </div>
         <Link href={ROUTES.blogPost(post.slug)} className="absolute inset-0">
           <span className="sr-only">Read {post.title}</span>

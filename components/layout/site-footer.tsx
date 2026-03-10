@@ -193,9 +193,11 @@ export function SiteFooter() {
                   href={social.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center rounded-full border border-border/70 bg-background/80 px-4 py-2 font-medium text-foreground transition-colors hover:border-foreground/40 hover:text-primary"
+                  className="group inline-flex items-center rounded-full border border-border/70 bg-background/80 px-4 py-2 font-medium text-foreground transition-colors hover:border-foreground/40 hover:text-primary"
                 >
-                  {social.label}
+                  <span className="transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5">
+                    {social.label}
+                  </span>
                 </Link>
               </div>
             ))}
