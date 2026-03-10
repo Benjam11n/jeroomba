@@ -41,6 +41,20 @@ export function HomePageAnimations({ children }: HomePageAnimationsProps) {
 
       media.add("(prefers-reduced-motion: no-preference)", () => {
         const frames = gsap.utils.toArray<HTMLElement>("[data-hero-frame]");
+        const isMobile = window.matchMedia("(max-width: 767px)").matches;
+        const getEnterOffset = (
+          element: HTMLElement,
+          axis: "x" | "y",
+        ) => {
+          const mobileValue =
+            axis === "x"
+              ? element.dataset.enterXMobile
+              : element.dataset.enterYMobile;
+          const defaultValue =
+            axis === "x" ? element.dataset.enterX : element.dataset.enterY;
+
+          return Number(isMobile ? mobileValue ?? defaultValue ?? 0 : defaultValue ?? 0);
+        };
         const heroTimeline = gsap.timeline({
           defaults: {
             duration: 0.82,
@@ -71,9 +85,9 @@ export function HomePageAnimations({ children }: HomePageAnimationsProps) {
               autoAlpha: 0,
               scale: 0.72,
               x: (_, element) =>
-                Number((element as HTMLElement).dataset.enterX ?? 0),
+                getEnterOffset(element as HTMLElement, "x"),
               y: (_, element) =>
-                Number((element as HTMLElement).dataset.enterY ?? 0),
+                getEnterOffset(element as HTMLElement, "y"),
               rotate: 0,
             },
             {
@@ -100,10 +114,11 @@ export function HomePageAnimations({ children }: HomePageAnimationsProps) {
           );
 
         frames.forEach((frame) => {
-          const direction = Number(frame.dataset.drift ?? "1");
+          const speedFactor = frame.dataset.speed;
+          const yOffset = speedFactor ? Number(speedFactor) * 10 : Number(frame.dataset.drift ?? "1") * 10;
 
           gsap.to(frame, {
-            yPercent: direction * 10,
+            yPercent: yOffset,
             ease: "none",
             scrollTrigger: {
               trigger: root,
@@ -113,6 +128,20 @@ export function HomePageAnimations({ children }: HomePageAnimationsProps) {
             },
           });
         });
+
+        const heroText = document.querySelector("[data-hero-text]");
+        if (heroText) {
+          gsap.to(heroText, {
+            yPercent: 40,
+            ease: "none",
+            scrollTrigger: {
+              trigger: root,
+              start: "top top",
+              end: "bottom top",
+              scrub: 1,
+            },
+          });
+        }
 
         gsap.from("[data-reveal='section-intro']", {
           autoAlpha: 0,

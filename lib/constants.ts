@@ -15,8 +15,11 @@ export const homeHeroImages = [
     rotate: -18,
     enterX: 220,
     enterY: 28,
+    enterXMobile: -120,
+    enterYMobile: 20,
     className:
-      "absolute top-0 left-[-1%] md:left-[2%] lg:left-[3%] xl:left-0 w-36 md:w-56 aspect-[3/4] rotate-[-18deg]",
+      "absolute top-0 left-[-1%] md:left-[2%] lg:left-[3%] xl:left-0 w-36 md:w-56 aspect-[3/4] rotate-[-18deg] z-0",
+    speed: -2,
   },
   {
     alt: "Basque cheesecake illustration",
@@ -24,8 +27,11 @@ export const homeHeroImages = [
     rotate: 15,
     enterX: -210,
     enterY: 24,
+    enterXMobile: 120,
+    enterYMobile: 18,
     className:
-      "absolute top-[5%] right-[-1%] md:right-[2%] lg:right-[3%] xl:right-0 w-32 md:w-48 aspect-[3/4] rotate-[15deg]",
+      "absolute top-[5%] right-[-1%] md:right-[2%] lg:right-[3%] xl:right-0 w-32 md:w-48 aspect-[3/4] rotate-[15deg] z-0",
+    speed: -4,
   },
   {
     alt: "Gyros illustration",
@@ -33,8 +39,11 @@ export const homeHeroImages = [
     rotate: -10,
     enterX: 170,
     enterY: -22,
+    enterXMobile: -110,
+    enterYMobile: -18,
     className:
-      "absolute bottom-[0%] left-[-1%] md:left-[5%] lg:left-[12%] w-36 md:w-52 aspect-[4/3] rotate-[-10deg]",
+      "absolute bottom-[0%] left-[-1%] md:left-[5%] lg:left-[12%] w-36 md:w-52 aspect-[4/3] rotate-[-10deg] z-20",
+    speed: 8,
   },
   {
     alt: "Meatballs illustration",
@@ -42,7 +51,10 @@ export const homeHeroImages = [
     rotate: 8,
     enterX: -180,
     enterY: -26,
+    enterXMobile: 110,
+    enterYMobile: -20,
     className:
-      "absolute bottom-[5%] right-[-1%] md:right-[5%] lg:right-[12%] w-40 md:w-60 aspect-[4/3] rotate-[8deg]",
+      "absolute bottom-[5%] right-[-1%] md:right-[5%] lg:right-[12%] w-40 md:w-60 aspect-[4/3] rotate-[8deg] z-10",
+    speed: 3,
   },
 ] as const;

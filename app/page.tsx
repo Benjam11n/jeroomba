@@ -28,15 +28,18 @@ export default async function Home() {
   return (
     <HomePageAnimations>
       <PageShell containerClassName="space-y-20 md:space-y-32">
-        <section className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-visible py-20">
+        <section className="relative flex min-h-[70vh] flex-col items-center justify-center overflow-visible py-20 mb-20 md:mb-32">
           {homeHeroImages.map((image, index) => (
             <Magnetic
               key={image.src}
               aria-hidden="true"
               className={image.className}
               data-drift={index % 2 === 0 ? "-1" : "1"}
+              data-speed={image.speed}
               data-enter-x={image.enterX}
               data-enter-y={image.enterY}
+              data-enter-x-mobile={image.enterXMobile}
+              data-enter-y-mobile={image.enterYMobile}
               data-hero-frame
               data-rotate={image.rotate}
               innerClassName="h-full"
@@ -58,7 +61,7 @@ export default async function Home() {
           ))}
 
           {/* Main Content */}
-          <div className="relative z-10 flex flex-col items-center space-y-4 text-center">
+          <div data-hero-text className="relative z-10 flex flex-col items-center space-y-4 text-center">
             <Magnetic
               data-hero-after-title
               className="mb-2 inline-block"
