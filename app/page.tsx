@@ -9,7 +9,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Magnetic } from "@/components/ui/magnetic";
 import { getAllPosts, getFeaturedPosts } from "@/lib/posts";
 import { ROUTES, siteConfig } from "@/lib/site";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 export const metadata: Metadata = {
   title: "Home",
