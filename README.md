@@ -123,7 +123,7 @@ This is a paragraph.
 
 **This text is bold**
 
-*This text is italic*
+_This text is italic_
 ```
 
 ## How to add images
@@ -168,12 +168,7 @@ Use normal markdown:
 If you want to control the image size, use HTML like this:
 
 ```mdx
-<img
-  src="/blog/ramen.jpg"
-  alt="Ramen in Tokyo"
-  width="400"
-  height="300"
-/>
+<img src="/blog/ramen.jpg" alt="Ramen in Tokyo" width="400" height="300" />
 ```
 
 This will keep the image responsive, but it will not grow wider than `400px`.
