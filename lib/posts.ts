@@ -5,20 +5,52 @@ import { compileMDX } from "next-mdx-remote/rsc";
 import { cache } from "react";
 import readingTime from "reading-time";
 import remarkGfm from "remark-gfm";
+import { z } from "zod";
 import { mdxComponents } from "@/components/blog/mdx-components";
 
 const postsDirectory = path.join(process.cwd(), "content/blog");
+const dateOnlyPattern = /^\d{4}-\d{2}-\d{2}$/;
 
-type PostFrontmatter = {
-  title: string;
-  description: string;
-  date: string;
-  tags: string[];
-  coverImage?: string;
-  coverImageAlt?: string;
-  featured: boolean;
-  published: boolean;
-};
+function parseUtcDateString(input: string) {
+  if (!dateOnlyPattern.test(input)) {
+    return null;
+  }
+
+  const [year, month, day] = input.split("-").map(Number);
+  const date = new Date(Date.UTC(year, month - 1, day));
+
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    return null;
+  }
+
+  return date;
+}
+
+const postFrontmatterSchema = z.object({
+  title: z.string().trim().min(1, "Title is required"),
+  description: z.string().trim().min(1, "Description is required"),
+  date: z
+    .string()
+    .regex(dateOnlyPattern, "Date must use YYYY-MM-DD format")
+    .refine((value) => parseUtcDateString(value) !== null, {
+      message: "Date must be a valid calendar date",
+    }),
+  tags: z.array(z.string().trim().min(1, "Tags cannot be empty")),
+  coverImage: z.string().trim().min(1, "Cover image cannot be empty").optional(),
+  coverImageAlt: z
+    .string()
+    .trim()
+    .min(1, "Cover image alt text cannot be empty")
+    .optional(),
+  featured: z.boolean(),
+  published: z.boolean(),
+});
+
+type PostFrontmatter = z.infer<typeof postFrontmatterSchema>;
 
 export type PostSummary = {
   slug: string;
@@ -38,21 +70,6 @@ type PostPageData = PostSummary & {
   content: React.ReactNode;
 };
 
-function normalizeFrontmatter(
-  frontmatter: Partial<PostFrontmatter>,
-): PostFrontmatter {
-  return {
-    title: frontmatter.title ?? "Untitled post",
-    description: frontmatter.description ?? "",
-    date: frontmatter.date ?? new Date().toISOString(),
-    tags: frontmatter.tags ?? [],
-    coverImage: frontmatter.coverImage,
-    coverImageAlt: frontmatter.coverImageAlt,
-    featured: frontmatter.featured ?? false,
-    published: frontmatter.published ?? true,
-  };
-}
-
 function createExcerpt(content: string) {
   return content
     .replace(/```[\s\S]*?```/g, "")
@@ -67,19 +84,50 @@ async function getPostFiles() {
   return entries.filter((entry) => entry.endsWith(".mdx"));
 }
 
+function getPostPath(slug: string) {
+  return path.join(postsDirectory, `${slug}.mdx`);
+}
+
+function isErrorWithCode(error: unknown): error is NodeJS.ErrnoException {
+  return error instanceof Error && "code" in error;
+}
+
 async function readPostSource(slug: string) {
-  const fullPath = path.join(postsDirectory, `${slug}.mdx`);
+  const fullPath = getPostPath(slug);
 
   try {
     return await fs.readFile(fullPath, "utf8");
-  } catch {
-    return null;
+  } catch (error) {
+    if (isErrorWithCode(error) && error.code === "ENOENT") {
+      return null;
+    }
+
+    throw new Error(`Failed to read post source at ${fullPath}`, {
+      cause: error instanceof Error ? error : undefined,
+    });
   }
 }
 
 function toSummary(slug: string, source: string): PostSummary {
   const { data, content } = matter(source);
-  const frontmatter = normalizeFrontmatter(data as Partial<PostFrontmatter>);
+  const filePath = getPostPath(slug);
+  const parsedFrontmatter = postFrontmatterSchema.safeParse(data);
+
+  if (!parsedFrontmatter.success) {
+    const issues = parsedFrontmatter.error.issues
+      .map((issue) => {
+        const fieldPath =
+          issue.path.length > 0 ? issue.path.join(".") : "frontmatter";
+        return `${fieldPath}: ${issue.message}`;
+      })
+      .join("; ");
+
+    throw new Error(
+      `Invalid frontmatter for post "${slug}" at ${filePath}: ${issues}`,
+    );
+  }
+
+  const frontmatter = parsedFrontmatter.data;
 
   return {
     slug,
@@ -107,7 +155,14 @@ export const getAllPosts = cache(async (): Promise<PostSummary[]> => {
   return posts
     .filter((post): post is PostSummary => Boolean(post?.published))
     .sort((left, right) => {
-      return new Date(right.date).getTime() - new Date(left.date).getTime();
+      const leftDate = parseUtcDateString(left.date);
+      const rightDate = parseUtcDateString(right.date);
+
+      if (!leftDate || !rightDate) {
+        throw new Error("Post dates must be validated before sorting");
+      }
+
+      return rightDate.getTime() - leftDate.getTime();
     });
 });
 
