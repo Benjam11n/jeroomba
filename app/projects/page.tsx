@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/layout/container";
 import { buttonVariants } from "@/components/ui/button";
 import { projects, siteConfig } from "@/lib/site";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 export const metadata: Metadata = {
   title: "Projects",

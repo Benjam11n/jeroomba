@@ -3,7 +3,7 @@ import path from "node:path";
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import { imageSize } from "image-size";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 type MdxImageProps = {
   alt?: string;

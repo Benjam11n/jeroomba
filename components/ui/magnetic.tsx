@@ -7,7 +7,7 @@ import type {
 } from "react";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 type QuickTo = (value: number) => gsap.core.Tween;
 

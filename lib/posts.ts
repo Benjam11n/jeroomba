@@ -6,6 +6,8 @@ import { cache } from "react";
 import readingTime from "reading-time";
 import remarkGfm from "remark-gfm";
 import { mdxComponents } from "@/mdx-components";
+import { isValidDate } from "@/lib/utils/date";
+import { createExcerpt } from "@/lib/utils/text";
 
 const postsDirectory = path.join(process.cwd(), "content/blog");
 
@@ -38,28 +40,104 @@ export type PostPageData = PostSummary & {
   content: React.ReactNode;
 };
 
-function normalizeFrontmatter(
-  frontmatter: Partial<PostFrontmatter>,
-): PostFrontmatter {
-  return {
-    title: frontmatter.title ?? "Untitled post",
-    description: frontmatter.description ?? "",
-    date: frontmatter.date ?? new Date().toISOString(),
-    tags: frontmatter.tags ?? [],
-    coverImage: frontmatter.coverImage,
-    coverImageAlt: frontmatter.coverImageAlt,
-    featured: frontmatter.featured ?? false,
-    published: frontmatter.published ?? true,
-  };
+function parseStringField(
+  value: unknown,
+  fieldName: keyof PostFrontmatter,
+  slug: string,
+) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(
+      `Invalid frontmatter in content/blog/${slug}.mdx: \`${fieldName}\` must be a non-empty string`,
+    );
+  }
+
+  return value.trim();
 }
 
-function createExcerpt(content: string) {
-  return content
-    .replace(/```[\s\S]*?```/g, "")
-    .replace(/[#>*_`-]/g, "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 170);
+function parseBooleanField(
+  value: unknown,
+  fieldName: keyof PostFrontmatter,
+  slug: string,
+) {
+  if (typeof value !== "boolean") {
+    throw new Error(
+      `Invalid frontmatter in content/blog/${slug}.mdx: \`${fieldName}\` must be a boolean`,
+    );
+  }
+
+  return value;
+}
+
+function parseStringArrayField(
+  value: unknown,
+  fieldName: "tags",
+  slug: string,
+) {
+  if (!Array.isArray(value)) {
+    throw new Error(
+      `Invalid frontmatter in content/blog/${slug}.mdx: \`${fieldName}\` must be an array of strings`,
+    );
+  }
+
+  const tags = value.map((tag, index) => {
+    if (typeof tag !== "string" || tag.trim().length === 0) {
+      throw new Error(
+        `Invalid frontmatter in content/blog/${slug}.mdx: \`${fieldName}[${index}]\` must be a non-empty string`,
+      );
+    }
+
+    return tag.trim();
+  });
+
+  return tags;
+}
+
+function parseOptionalStringField(
+  value: unknown,
+  fieldName: "coverImage" | "coverImageAlt",
+  slug: string,
+) {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (typeof value !== "string" || value.trim().length === 0) {
+    throw new Error(
+      `Invalid frontmatter in content/blog/${slug}.mdx: \`${fieldName}\` must be a non-empty string when provided`,
+    );
+  }
+
+  return value.trim();
+}
+
+function parseFrontmatter(
+  slug: string,
+  data: Record<string, unknown>,
+): PostFrontmatter {
+  const title = parseStringField(data.title, "title", slug);
+  const description = parseStringField(data.description, "description", slug);
+  const date = parseStringField(data.date, "date", slug);
+
+  if (!isValidDate(date)) {
+    throw new Error(
+      `Invalid frontmatter in content/blog/${slug}.mdx: \`date\` must be a valid date string`,
+    );
+  }
+
+  return {
+    title,
+    description,
+    date,
+    tags: parseStringArrayField(data.tags, "tags", slug),
+    coverImage: parseOptionalStringField(data.coverImage, "coverImage", slug),
+    coverImageAlt: parseOptionalStringField(
+      data.coverImageAlt,
+      "coverImageAlt",
+      slug,
+    ),
+    featured: parseBooleanField(data.featured, "featured", slug),
+    published: parseBooleanField(data.published, "published", slug),
+  };
 }
 
 async function getPostFiles() {
@@ -78,14 +156,17 @@ async function readPostSource(slug: string) {
 }
 
 function toSummary(slug: string, source: string): PostSummary {
-  const { data, content } = matter(source);
-  const frontmatter = normalizeFrontmatter(data as Partial<PostFrontmatter>);
+  const parsedMatter = matter(source);
+  const frontmatter = parseFrontmatter(
+    slug,
+    parsedMatter.data as Record<string, unknown>,
+  );
 
   return {
     slug,
     ...frontmatter,
-    readingTime: readingTime(content).text,
-    excerpt: createExcerpt(content),
+    readingTime: readingTime(parsedMatter.content).text,
+    excerpt: createExcerpt(parsedMatter.content),
   };
 }
 

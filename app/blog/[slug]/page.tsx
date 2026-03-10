@@ -7,7 +7,8 @@ import { Container } from "@/components/layout/container";
 import { buttonVariants } from "@/components/ui/button";
 import { getAllPosts, getPostBySlug } from "@/lib/posts";
 import { ROUTES, siteConfig } from "@/lib/site";
-import { cn, formatDate } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
+import { formatDate } from "@/lib/utils/date";
 
 type PostPageProps = {
   params: Promise<{
