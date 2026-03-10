@@ -22,8 +22,12 @@ export const siteConfig = {
     { label: "Blog", href: ROUTES.blog },
   ],
   socials: [
-    { label: "LinkedIn", href: "https://www.linkedin.com/" },
-    { label: "X", href: "https://x.com/" },
+    {
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/",
+      icon: "linkedin",
+    },
+    { label: "X", href: "https://x.com/", icon: "x" },
   ],
 } as const;
 

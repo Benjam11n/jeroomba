@@ -4,16 +4,19 @@ import { useLayoutEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Linkedin, X } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { ROUTES, siteConfig } from "@/lib/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const socialIcons = {
+  linkedin: Linkedin,
+  x: X,
+} as const;
+
 export function SiteFooter() {
   const footerRef = useRef<HTMLElement>(null);
-  const footerSocials = siteConfig.socials.filter(
-    (social) => social.label === "LinkedIn" || social.label === "X",
-  );
 
   useLayoutEffect(() => {
     const footer = footerRef.current;
@@ -183,24 +186,29 @@ export function SiteFooter() {
           </p>
 
           <div className="flex flex-wrap gap-3">
-            {footerSocials.map((social) => (
-              <div
-                key={social.label}
-                data-footer-social
-                className="inline-block"
-              >
-                <Link
-                  href={social.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group inline-flex items-center rounded-full border border-border/70 bg-background/80 px-4 py-2 font-medium text-foreground transition-colors hover:border-foreground/40 hover:text-primary"
+            {siteConfig.socials.map((social) => {
+              const SocialIcon = socialIcons[social.icon];
+
+              return (
+                <div
+                  key={social.label}
+                  data-footer-social
+                  className="inline-block"
                 >
-                  <span className="transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5">
-                    {social.label}
-                  </span>
-                </Link>
-              </div>
-            ))}
+                  <Link
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="group inline-flex items-center gap-2 rounded-full border border-border/70 bg-background/80 px-4 py-2 font-medium text-foreground transition-colors hover:border-foreground/40 hover:text-primary"
+                  >
+                    <SocialIcon className="size-4" aria-hidden="true" />
+                    <span className="transition-transform duration-300 ease-out group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5">
+                      {social.label}
+                    </span>
+                  </Link>
+                </div>
+              );
+            })}
           </div>
         </div>
       </Container>
